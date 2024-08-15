@@ -61,49 +61,39 @@ const ListPage = () => {
   }, []);
 
   const logoutHandler = async () => {
-    if (
-      localStorage.getItem("token") == null ||
-      localStorage.getItem("token").length < 170 // jwt 토큰의 길이보다 작을때
-    ) {
-      localStorage.removeItem("token");
-      navigate("/");
-    } else {
-      const token = localStorage.getItem("token")?.replace("Bearer ", "");
-      const base64Url = token.split(".")[1];
-      const decodedStr = atob(base64Url.replace(/-/g, "+").replace(/_/g, "/"));
-      const decodedJWT = JSON.parse(
-        new TextDecoder("utf-8").decode(
-          new Uint8Array(
-            decodedStr.split("").map((char) => char.charCodeAt(0)),
-          ),
-        ),
-      );
+    const token = localStorage.getItem("token")?.replace("Bearer ", "");
+    const base64Url = token.split(".")[1];
+    const decodedStr = atob(base64Url.replace(/-/g, "+").replace(/_/g, "/"));
+    const decodedJWT = JSON.parse(
+      new TextDecoder("utf-8").decode(
+        new Uint8Array(decodedStr.split("").map((char) => char.charCodeAt(0))),
+      ),
+    );
 
-      const email = decodedJWT.sub;
+    const email = decodedJWT.sub;
 
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-      const res = await fetch(`http://localhost:8080/api/logout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-AUTH-TOKEN": token,
-        },
-        body: JSON.stringify({
-          email,
-        }),
-      });
-      try {
-        const data = await res.json();
-        console.log(data);
-        localStorage.removeItem("token"); //로그인 정보 삭제
-        navigate("/login");
-        alert("로그아웃 되었습니다.");
-      } catch (error) {
-        console.error(error);
-      }
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    const res = await fetch(`http://localhost:8080/api/logout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-AUTH-TOKEN": token,
+      },
+      body: JSON.stringify({
+        email,
+      }),
+    });
+    try {
+      const data = await res.json();
+      console.log(data);
+      localStorage.removeItem("token"); //로그인 정보 삭제
+      navigate("/login");
+      alert("로그아웃 되었습니다.");
+    } catch (error) {
+      console.error(error);
     }
   };
 
