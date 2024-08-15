@@ -47,6 +47,11 @@ const ListPage = () => {
         },
       })
         .then((res) => {
+          if (res.status === 403) {
+            localStorage.removeItem("token");
+            navigate("/");
+            return;
+          }
           return res.json();
         })
         .then((res) => setPosts([...res.posts]))
@@ -56,7 +61,10 @@ const ListPage = () => {
   }, []);
 
   const logoutHandler = async () => {
-    if (localStorage.getItem("token") === null) {
+    if (
+      localStorage.getItem("token") == null ||
+      localStorage.getItem("token").length < 170 // jwt 토큰의 길이보다 작을때
+    ) {
       localStorage.removeItem("token");
       navigate("/");
     } else {
