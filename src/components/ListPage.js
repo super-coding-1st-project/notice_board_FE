@@ -67,6 +67,7 @@ const ListPage = () => {
     }).then(res => res.json()).then(() => {
       localStorage.removeItem('token'); //로그인 정보 삭제
       navigate('/login');
+      alert("로그아웃 되었습니다.");
     }).catch((error) => console.error(error));
     ;
   };
