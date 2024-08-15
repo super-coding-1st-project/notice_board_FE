@@ -25,11 +25,15 @@ const LoginPage = () => {
         navigate('/')
         return;
       }
+      if(res.status === 406){
+        alert("접근할 수 없습니다.")
+        navigate('/')
+        return;
+      }
       else if(res.status === 200){
         alert("로그인 되었습니다.")
       }
 
-      const data = await res.json();
       const token = res.headers.get('X-AUTH-TOKEN');
         if(path === '/api/login') {
           localStorage.setItem('token', token);
