@@ -21,7 +21,7 @@ const LoginPage = () => {
         }),
       });
 
-      const token = res.headers.get("X-AUTH-TOKEN");
+      const token = res.headers.get("Authorization");
       if (path === "/api/login") {
         if (res.status === 404) {
           alert("이메일을 찾을 수 없습니다.");

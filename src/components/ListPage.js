@@ -43,7 +43,7 @@ const ListPage = () => {
       }
       await fetch("http://localhost:8080/api/posts", {
         headers: {
-          "X-AUTH-TOKEN": token,
+          Authorization: token,
         },
       })
         .then((res) => {
@@ -80,7 +80,7 @@ const ListPage = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-AUTH-TOKEN": token,
+        Authorization: token,
       },
       body: JSON.stringify({
         email,
