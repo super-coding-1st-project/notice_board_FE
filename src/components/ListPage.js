@@ -87,8 +87,6 @@ const ListPage = () => {
       }),
     });
     try {
-      const data = await res.json();
-      console.log(data);
       localStorage.removeItem("token"); //로그인 정보 삭제
       navigate("/login");
       alert("로그아웃 되었습니다.");
@@ -101,6 +99,12 @@ const ListPage = () => {
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) return;
     const { posts } = await fetch(
       `http://localhost:8080/api/posts/search?author_email=${email}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token")?.replace("Bearer ", ""),
+        },
+      },
     )
       .then((res) => res.json())
       .catch((error) => {
