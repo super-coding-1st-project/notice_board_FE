@@ -76,7 +76,7 @@ const ListPage = () => {
       navigate("/login");
       return;
     }
-    const res = await fetch(`http://localhost:8080/api/logout`, {
+    await fetch(`http://localhost:8080/api/logout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -85,18 +85,20 @@ const ListPage = () => {
       body: JSON.stringify({
         email,
       }),
+    }).then(() => {
+      try {
+        localStorage.removeItem("token"); //로그인 정보 삭제
+        navigate("/login");
+        alert("로그아웃 되었습니다.");
+      } catch (error) {
+        console.error(error);
+      }
     });
-    try {
-      localStorage.removeItem("token"); //로그인 정보 삭제
-      navigate("/login");
-      alert("로그아웃 되었습니다.");
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   const searchHandler = async (email) => {
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) return;
+
     const { posts } = await fetch(
       `http://localhost:8080/api/posts/search?author_email=${email}`,
       {
