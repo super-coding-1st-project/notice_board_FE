@@ -34,6 +34,7 @@ const ListPage = () => {
   useEffect(() => {
     async function fetchData() {
       const token = localStorage.getItem("token")?.replace("Bearer ", "");
+
       if (!token) {
         navigate("/login");
         return;
@@ -41,9 +42,11 @@ const ListPage = () => {
         localStorage.removeItem("token");
         navigate("/");
       }
+      const email = getEmailFromToken();
       await fetch("http://localhost:8080/api/posts", {
         headers: {
           Authorization: token,
+          Email: email,
         },
       })
         .then((res) => {
@@ -114,6 +117,19 @@ const ListPage = () => {
       });
     if (!posts) return;
     setPosts([...posts]);
+  };
+
+  const getEmailFromToken = () => {
+    const token = localStorage.getItem("token");
+    const base64Url = token.split(".")[1];
+    const decodedStr = atob(base64Url.replace(/-/g, "+").replace(/_/g, "/"));
+    const decodedJWT = JSON.parse(
+      new TextDecoder("utf-8").decode(
+        new Uint8Array(decodedStr.split("").map((char) => char.charCodeAt(0))),
+      ),
+    );
+
+    return decodedJWT.sub;
   };
 
   return (

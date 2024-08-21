@@ -4,6 +4,7 @@ import { red } from "@mui/material/colors";
 import { blue, CustomButton } from "./CustomButton";
 import { StyledTextarea } from "./StyledTextArea";
 import { useNavigate } from "react-router-dom";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
 const PostDetailPage = () => {
   const navigate = useNavigate();
@@ -28,8 +29,11 @@ const PostDetailPage = () => {
     content: "",
     author: "",
   });
+  const [likes, setLikes] = useState(0);
+  const [liked, setLiked] = useState(false);
 
   async function fetchData() {
+    const postData = JSON.parse(localStorage.getItem("post"));
     await fetch(`http://localhost:8080/api/comments`, {
       headers: {
         "Content-Type": "application/json",
@@ -40,14 +44,16 @@ const PostDetailPage = () => {
       .then((res) => {
         if (!res) return;
         setComments([...res.comments.filter((c) => c?.post_id === post.id)]);
-        console.log(res.comments.filter((c) => c?.post_id === post.id));
       })
       .catch((err) => console.error(err));
   }
 
   useEffect(() => {
     const postData = JSON.parse(localStorage.getItem("post"));
+
     setPost({ ...postData });
+    setLiked(postData.liked);
+    setLikes(postData.likeCount || 0);
     try {
       fetchData();
     } catch (e) {
@@ -56,6 +62,7 @@ const PostDetailPage = () => {
   }, [post.id]);
 
   const handlePostChange = async () => {
+    const email = getEmailFromToken();
     await fetch(`http://localhost:8080/api/posts/${post.id}`, {
       method: "PUT",
       headers: {
@@ -65,10 +72,64 @@ const PostDetailPage = () => {
       body: JSON.stringify({
         title: post?.title || "",
         content: post?.content || "",
+        email: email,
       }),
     })
-      .then(() => alert("수정되었습니다."))
+      .then(async (res) => {
+        const data = await res.json();
+        alert(data.message);
+      })
       .then(() => navigate("/"))
+      .catch((err) => console.error(err));
+  };
+
+  const handlePostDelete = async () => {
+    const email = getEmailFromToken();
+    await fetch(`http://localhost:8080/api/posts/${post.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+      body: JSON.stringify({
+        email: email,
+      }),
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        alert(data.message);
+      })
+      .then(() => navigate("/"))
+      .catch((err) => console.error(err));
+  };
+
+  const handleLike = async () => {
+    const email = getEmailFromToken();
+    await fetch(`http://localhost:8080/api/posts/${post.id}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+      body: JSON.stringify({
+        email: email,
+        postId: `${post.id}`,
+      }),
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        alert(data.message);
+        setLiked(data.liked);
+        setLikes(data.likeCount);
+
+        const post = JSON.parse(localStorage.getItem("post"));
+
+        if (post) {
+          post.likeCount = data.likeCount;
+          post.liked = data.liked;
+          localStorage.setItem("post", JSON.stringify(post));
+        }
+      })
       .catch((err) => console.error(err));
   };
 
@@ -108,7 +169,7 @@ const PostDetailPage = () => {
       alert("작성자와 내용을 입력하세요");
       return;
     }
-    const res = await fetch(`http://localhost:8080/api/comments`, {
+    await fetch(`http://localhost:8080/api/comments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -128,6 +189,19 @@ const PostDetailPage = () => {
         fetchData();
       })
       .catch((err) => console.error(err));
+  };
+
+  const getEmailFromToken = () => {
+    const token = localStorage.getItem("token");
+    const base64Url = token.split(".")[1];
+    const decodedStr = atob(base64Url.replace(/-/g, "+").replace(/_/g, "/"));
+    const decodedJWT = JSON.parse(
+      new TextDecoder("utf-8").decode(
+        new Uint8Array(decodedStr.split("").map((char) => char.charCodeAt(0))),
+      ),
+    );
+
+    return decodedJWT.sub;
   };
 
   return (
@@ -189,9 +263,22 @@ const PostDetailPage = () => {
         </CustomButton>
         <CustomButton
           style={{ backgroundColor: red[500] }}
+          onClick={handlePostDelete}
+        >
+          삭제
+        </CustomButton>
+        <CustomButton
+          style={{ backgroundColor: red[500] }}
           onClick={() => navigate("/")}
         >
           취소
+        </CustomButton>
+        <CustomButton
+          style={{ backgroundColor: blue[500] }}
+          onClick={handleLike}
+        >
+          {liked ? <AiFillHeart /> : <AiOutlineHeart />} 좋아요{" "}
+          <Typography variant="h">{likes}</Typography>
         </CustomButton>
       </div>
       <div style={{ marginTop: 20 }}>
