@@ -8,9 +8,10 @@ const LoginPage = () => {
   const [loginState, setLoginState] = useState({
     email: "",
     password: "",
+    username: "",
   });
 
-  const loginHandler = async (path, email, password) => {
+  const loginHandler = async (path, email, password, username) => {
     try {
       const res = await fetch(`http://localhost:8080${path}`, {
         method: "POST",
@@ -18,6 +19,7 @@ const LoginPage = () => {
         body: JSON.stringify({
           email,
           password,
+          username,
         }),
       });
 
@@ -68,8 +70,21 @@ const LoginPage = () => {
         id="outlined-basic"
         label="비밀번호를 입력해주세요."
         variant="outlined"
+        type="password"
         onChange={(event) =>
           setLoginState((prev) => ({ ...prev, password: event.target.value }))
+        }
+      />
+      <h2>사용자 이름</h2>
+      <TextField
+        id="username"
+        label="사용자 이름을 입력해주세요."
+        variant="outlined"
+        onChange={(event) =>
+          setLoginState((prev) => ({
+            ...prev,
+            username: event.target.value,
+          }))
         }
       />
       <div
@@ -80,7 +95,12 @@ const LoginPage = () => {
         <CustomButton
           style={{ backgroundColor: blue[900] }}
           onClick={() =>
-            loginHandler("/api/signup", loginState.email, loginState.password)
+            loginHandler(
+              "/api/signup",
+              loginState.email,
+              loginState.password,
+              loginState.username,
+            )
           }
         >
           회원가입
