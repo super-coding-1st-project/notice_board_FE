@@ -1,6 +1,22 @@
 
 # notice_board_FE
 게시판 프론트 엔드
+# 기본 구현 사항
+- 게시물 조회, 작성, 수정, 삭제
+- 댓글 작성, 수정
+- 게시물 이메일로 검색
+
+# 추가로 구현한 사항
+- 좋아요 기능 구현, 취소
+- 회원 가입 시 사용자 이름 추가
+
+# 보완 사항
+- 현재 로그인 페이지와 회원가입 페이지가 하나로 합쳐져 있는데 입력 요구사항이 다르기 때문에 따로 분리해야 할 것으로 예상됨.
+- 로그인 보안 기능과 관련하여 현재 JWT를 사용하여 구현했는데 보안을 강화하기 위한 기능이 필요할 것으로 예상됨.
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
