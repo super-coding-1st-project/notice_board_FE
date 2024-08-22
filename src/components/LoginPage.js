@@ -58,7 +58,7 @@ const LoginPage = () => {
       <h1>로그인 페이지</h1>
       <h2>이메일</h2>
       <TextField
-        id="outlined-basic"
+        id="email"
         label="이메일을 입력해주세요."
         variant="outlined"
         onChange={(event) =>
@@ -67,7 +67,7 @@ const LoginPage = () => {
       />
       <h2>비밀번호</h2>
       <TextField
-        id="outlined-basic"
+        id="password"
         label="비밀번호를 입력해주세요."
         variant="outlined"
         type="password"
