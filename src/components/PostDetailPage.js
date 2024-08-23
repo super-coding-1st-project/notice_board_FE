@@ -133,7 +133,37 @@ const PostDetailPage = () => {
       .catch((err) => console.error(err));
   };
 
+  const submitComment = async () => {
+    const email = getEmailFromToken();
+    if (!newComment.author || !newComment.content) {
+      alert("작성자와 내용을 입력하세요");
+      return;
+    }
+    await fetch(`http://localhost:8080/api/comments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+      body: JSON.stringify({
+        author: newComment.author,
+        content: newComment.content,
+        post_id: post.id,
+        email: email,
+      }),
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        alert(data.message);
+        setComments([...comments], data.comment);
+        setNewComment({ content: "", author: "" });
+        fetchData();
+      })
+      .catch((err) => console.error(err));
+  };
+
   const handleCommentChange = async (id, content) => {
+    const email = getEmailFromToken();
     await fetch(`http://localhost:8080/api/comments/${id}`, {
       method: "PUT",
       headers: {
@@ -141,11 +171,33 @@ const PostDetailPage = () => {
         Authorization: localStorage.getItem("token"),
       },
       body: JSON.stringify({
+        email: email,
         content: content,
       }),
     })
-      .then(() => {
-        alert("댓글이 수정되었습니다.");
+      .then(async (res) => {
+        const data = await res.json();
+        alert(data.message);
+        fetchData();
+      })
+      .catch((err) => console.error(err));
+  };
+
+  const handleCommentDelete = async (id) => {
+    const email = getEmailFromToken();
+    await fetch(`http://localhost:8080/api/comments/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+      body: JSON.stringify({
+        email: email,
+      }),
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        alert(data.message);
         fetchData();
       })
       .catch((err) => console.error(err));
@@ -162,33 +214,6 @@ const PostDetailPage = () => {
       };
       setComments([...newComments]);
     }
-  };
-
-  const submitComment = async () => {
-    if (!newComment.author || !newComment.content) {
-      alert("작성자와 내용을 입력하세요");
-      return;
-    }
-    await fetch(`http://localhost:8080/api/comments`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: localStorage.getItem("token"),
-      },
-      body: JSON.stringify({
-        author: newComment.author,
-        content: newComment.content,
-        post_id: post.id,
-      }),
-    })
-      .then(async (res) => {
-        alert("댓글이 등록되었습니다");
-        const data = await res.json();
-        setComments([...comments], data.comment);
-        setNewComment({ content: "", author: "" });
-        fetchData();
-      })
-      .catch((err) => console.error(err));
   };
 
   const getEmailFromToken = () => {
@@ -334,6 +359,12 @@ const PostDetailPage = () => {
                   onClick={() => handleCommentChange(c.id, c.content)}
                 >
                   수정
+                </CustomButton>
+                <CustomButton
+                  style={{ backgroundColor: red[500] }}
+                  onClick={() => handleCommentDelete(c.id)}
+                >
+                  삭제
                 </CustomButton>
               </CardContent>
             </Card>
