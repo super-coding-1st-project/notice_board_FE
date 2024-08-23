@@ -24,17 +24,22 @@ const LoginPage = () => {
       });
 
       const token = res.headers.get("Authorization");
+      const data = await res.json();
       if (path === "/api/login") {
         if (res.status === 404) {
-          alert("이메일을 찾을 수 없습니다.");
+          alert(data.message);
+          navigate("/");
+          return;
+        } else if (res.status === 401) {
+          alert(data.message);
           navigate("/");
           return;
         } else if (res.status === 406) {
-          alert("접근할 수 없습니다.");
+          alert(data.message);
           navigate("/");
           return;
         } else if (res.status === 200) {
-          alert("로그인 되었습니다.");
+          alert(data.message);
         }
         localStorage.setItem("token", token);
         navigate("/");
