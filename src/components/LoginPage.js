@@ -24,28 +24,25 @@ const LoginPage = () => {
       });
 
       const token = res.headers.get("Authorization");
+      const data = await res.json();
       if (path === "/api/login") {
-        if (res.status === 404) {
-          alert("이메일을 찾을 수 없습니다.");
+        if (res.status === 200) {
+          alert(data.message);
+          localStorage.setItem("token", token);
           navigate("/");
-          return;
-        } else if (res.status === 406) {
-          alert("접근할 수 없습니다.");
+        } else {
+          alert(data.message);
           navigate("/");
-          return;
-        } else if (res.status === 200) {
-          alert("로그인 되었습니다.");
         }
-        localStorage.setItem("token", token);
-        navigate("/");
       } else if (path === "/api/signup") {
-        if (res.status === 400) {
-          alert("중복된 아이디 입니다.");
-        } else if (res.status === 200) {
-          alert("성공적으로 가입되었습니다.");
+        if (res.status === 200) {
+          alert(data.message);
+        } else {
+          alert(data.message);
         }
       }
     } catch (error) {
+      alert(error);
       console.error(error);
     }
   };

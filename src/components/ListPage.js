@@ -10,6 +10,7 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
+import * as data from "react-dom/test-utils";
 
 const ListPage = () => {
   const navigate = useNavigate();
@@ -64,18 +65,10 @@ const ListPage = () => {
   }, []);
 
   const logoutHandler = async () => {
-    const token = localStorage.getItem("token")?.replace("Bearer ", "");
-    const base64Url = token.split(".")[1];
-    const decodedStr = atob(base64Url.replace(/-/g, "+").replace(/_/g, "/"));
-    const decodedJWT = JSON.parse(
-      new TextDecoder("utf-8").decode(
-        new Uint8Array(decodedStr.split("").map((char) => char.charCodeAt(0))),
-      ),
-    );
+    const token = localStorage.getItem("token");
+    const email = getEmailFromToken();
 
-    const email = decodedJWT.sub;
-
-    if (!token) {
+    if (!email) {
       navigate("/login");
       return;
     }
@@ -88,12 +81,14 @@ const ListPage = () => {
       body: JSON.stringify({
         email,
       }),
-    }).then(() => {
+    }).then(async (res) => {
+      const data = await res.json();
       try {
         localStorage.removeItem("token"); //로그인 정보 삭제
         navigate("/login");
         alert("로그아웃 되었습니다.");
       } catch (error) {
+        alert(data.message);
         console.error(error);
       }
     });
@@ -120,16 +115,23 @@ const ListPage = () => {
   };
 
   const getEmailFromToken = () => {
-    const token = localStorage.getItem("token");
-    const base64Url = token.split(".")[1];
-    const decodedStr = atob(base64Url.replace(/-/g, "+").replace(/_/g, "/"));
-    const decodedJWT = JSON.parse(
-      new TextDecoder("utf-8").decode(
-        new Uint8Array(decodedStr.split("").map((char) => char.charCodeAt(0))),
-      ),
-    );
+    try {
+      const token = localStorage.getItem("token");
+      const base64Url = token.split(".")[1];
+      const decodedStr = atob(base64Url.replace(/-/g, "+").replace(/_/g, "/"));
+      const decodedJWT = JSON.parse(
+        new TextDecoder("utf-8").decode(
+          new Uint8Array(
+            decodedStr.split("").map((char) => char.charCodeAt(0)),
+          ),
+        ),
+      );
 
-    return decodedJWT.sub;
+      return decodedJWT.sub;
+    } catch (error) {
+      alert("토큰을 파싱하는 과정에서 오류가 발생했습니다.");
+      console.log(error);
+    }
   };
 
   return (
