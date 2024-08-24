@@ -50,7 +50,6 @@ const PostDetailPage = () => {
 
   useEffect(() => {
     const postData = JSON.parse(localStorage.getItem("post"));
-
     setPost({ ...postData });
     setLiked(postData.liked);
     setLikes(postData.likeCount || 0);
@@ -80,7 +79,9 @@ const PostDetailPage = () => {
         alert(data.message);
       })
       .then(() => navigate("/"))
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   const handlePostDelete = async () => {
@@ -100,7 +101,10 @@ const PostDetailPage = () => {
         alert(data.message);
       })
       .then(() => navigate("/"))
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        alert(err);
+        console.error(err);
+      });
   };
 
   const handleLike = async () => {
@@ -118,7 +122,7 @@ const PostDetailPage = () => {
     })
       .then(async (res) => {
         const data = await res.json();
-        // alert(data.message);
+        alert(data.message);
         setLiked(data.liked);
         setLikes(data.likeCount);
 
