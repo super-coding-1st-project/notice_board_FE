@@ -14,15 +14,15 @@ const PostDetailPage = () => {
       id: 1,
       content: "댓글 내용",
       author: "작성자1",
-      post_id: 1,
-      created_at: "작성일시",
+      postId: 1,
+      createdAt: "작성일시",
     },
     {
       id: 2,
       content: "댓글 내용",
       author: "작성자2",
-      post_id: 1,
-      created_at: "작성일시",
+      postId: 1,
+      createdAt: "작성일시",
     },
   ]);
   const [newComment, setNewComment] = useState({
@@ -33,7 +33,7 @@ const PostDetailPage = () => {
   const [liked, setLiked] = useState(false);
 
   async function fetchData() {
-    const postData = JSON.parse(localStorage.getItem("post"));
+    const post = JSON.parse(localStorage.getItem("post"));
     await fetch(`http://localhost:8080/api/comments`, {
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +43,8 @@ const PostDetailPage = () => {
       .then((res) => res.json())
       .then((res) => {
         if (!res) return;
-        setComments([...res.comments.filter((c) => c?.post_id === post.id)]);
+        console.log(res);
+        setComments([...res.comments.filter((c) => c?.postId === post.id)]);
       })
       .catch((err) => console.error(err));
   }
@@ -152,7 +153,7 @@ const PostDetailPage = () => {
       body: JSON.stringify({
         author: newComment.author,
         content: newComment.content,
-        post_id: post.id,
+        postId: post.id,
         email: email,
       }),
     })
