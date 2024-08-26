@@ -42,24 +42,27 @@ const ListPage = () => {
       } else if (token === "null") {
         localStorage.removeItem("token");
         navigate("/");
+        return;
       }
-      const email = getEmailFromToken();
-      await fetch("http://localhost:8080/api/posts", {
-        headers: {
-          Authorization: token,
-          Email: email,
-        },
-      })
-        .then((res) => {
-          if (res.status === 403) {
-            localStorage.removeItem("token");
-            navigate("/");
-            return;
-          }
-          return res.json();
+      if (token !== null && token !== "null") {
+        const email = getEmailFromToken();
+        await fetch("http://localhost:8080/api/posts", {
+          headers: {
+            Authorization: token,
+            Email: email,
+          },
         })
-        .then((res) => setPosts([...res.posts]))
-        .catch((err) => console.error(err));
+          .then((res) => {
+            if (res.status === 403) {
+              localStorage.removeItem("token");
+              navigate("/");
+              return;
+            }
+            return res.json();
+          })
+          .then((res) => setPosts([...res.posts]))
+          .catch((err) => console.error(err));
+      }
     }
     fetchData();
   }, []);
