@@ -15,17 +15,20 @@ const CreatePostPage = () => {
 
   const submitPost = async () => {
     const token = localStorage.getItem("token")?.replace("Bearer ", "");
-    await fetch(`http://localhost:8080/api/posts`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json", // JSON 데이터임을 서버에 알림
-        Authorization: token,
+    await fetch(
+      `http://ec2-13-124-38-196.ap-northeast-2.compute.amazonaws.com:8080/api/posts`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // JSON 데이터임을 서버에 알림
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          title: post?.title || "",
+          content: post?.content || "",
+        }),
       },
-      body: JSON.stringify({
-        title: post?.title || "",
-        content: post?.content || "",
-      }),
-    })
+    )
       .then(() => navigate("/"))
       .catch((err) => console.error(err));
   };

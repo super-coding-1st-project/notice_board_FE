@@ -13,15 +13,18 @@ const LoginPage = () => {
 
   const loginHandler = async (path, email, password, username) => {
     try {
-      const res = await fetch(`http://localhost:8080${path}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-          username,
-        }),
-      });
+      const res = await fetch(
+        `http://ec2-13-124-38-196.ap-northeast-2.compute.amazonaws.com:8080${path}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            password,
+            username,
+          }),
+        },
+      );
 
       const token = res.headers.get("Authorization");
       const data = await res.json();

@@ -46,12 +46,15 @@ const ListPage = () => {
       }
       if (token !== null && token !== "null") {
         const email = getEmailFromToken();
-        await fetch("http://localhost:8080/api/posts", {
-          headers: {
-            Authorization: token,
-            Email: email,
+        await fetch(
+          "http://ec2-13-124-38-196.ap-northeast-2.compute.amazonaws.com:8080/api/posts",
+          {
+            headers: {
+              Authorization: token,
+              Email: email,
+            },
           },
-        })
+        )
           .then((res) => {
             if (res.status === 403) {
               localStorage.removeItem("token");
@@ -75,16 +78,19 @@ const ListPage = () => {
       navigate("/login");
       return;
     }
-    await fetch(`http://localhost:8080/api/logout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
+    await fetch(
+      `http://ec2-13-124-38-196.ap-northeast-2.compute.amazonaws.com:8080/api/logout`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          email,
+        }),
       },
-      body: JSON.stringify({
-        email,
-      }),
-    }).then(async (res) => {
+    ).then(async (res) => {
       const data = await res.json();
       try {
         localStorage.removeItem("token"); //로그인 정보 삭제
@@ -101,7 +107,7 @@ const ListPage = () => {
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) return;
 
     const { posts } = await fetch(
-      `http://localhost:8080/api/posts/search?author_email=${email}`,
+      `http://ec2-13-124-38-196.ap-northeast-2.compute.amazonaws.com:8080/api/posts/search?author_email=${email}`,
       {
         headers: {
           "Content-Type": "application/json",
