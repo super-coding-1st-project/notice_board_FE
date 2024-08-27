@@ -133,7 +133,9 @@ const ListPage = () => {
       return decodedJWT.sub;
     } catch (error) {
       alert("토큰을 파싱하는 과정에서 오류가 발생했습니다.");
+      localStorage.removeItem("token");
       console.log(error);
+      navigate("/");
     }
   };
 
