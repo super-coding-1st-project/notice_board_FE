@@ -34,15 +34,12 @@ const PostDetailPage = () => {
 
   async function fetchData() {
     const post = JSON.parse(localStorage.getItem("post"));
-    await fetch(
-      `http://ec2-13-124-38-196.ap-northeast-2.compute.amazonaws.com:8080/api/comments`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
+    await fetch(`http://43.200.204.217:8080/api/comments`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
       },
-    )
+    })
       .then((res) => res.json())
       .then((res) => {
         if (!res) return;
@@ -65,21 +62,18 @@ const PostDetailPage = () => {
 
   const handlePostChange = async () => {
     const email = getEmailFromToken();
-    await fetch(
-      `http://ec2-13-124-38-196.ap-northeast-2.compute.amazonaws.com:8080/api/posts/${post.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-        body: JSON.stringify({
-          title: post?.title || "",
-          content: post?.content || "",
-          email: email,
-        }),
+    await fetch(`http://43.200.204.217:8080/api/posts/${post.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
       },
-    )
+      body: JSON.stringify({
+        title: post?.title || "",
+        content: post?.content || "",
+        email: email,
+      }),
+    })
       .then(async (res) => {
         const data = await res.json();
         alert(data.message);
@@ -92,19 +86,16 @@ const PostDetailPage = () => {
 
   const handlePostDelete = async () => {
     const email = getEmailFromToken();
-    await fetch(
-      `http://ec2-13-124-38-196.ap-northeast-2.compute.amazonaws.com:8080/api/posts/${post.id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-        body: JSON.stringify({
-          email: email,
-        }),
+    await fetch(`http://43.200.204.217:8080/api/posts/${post.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
       },
-    )
+      body: JSON.stringify({
+        email: email,
+      }),
+    })
       .then(async (res) => {
         const data = await res.json();
         alert(data.message);
@@ -118,20 +109,17 @@ const PostDetailPage = () => {
 
   const handleLike = async () => {
     const email = getEmailFromToken();
-    await fetch(
-      `http://ec2-13-124-38-196.ap-northeast-2.compute.amazonaws.com:8080/api/posts/${post.id}/like`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-        body: JSON.stringify({
-          email: email,
-          postId: `${post.id}`,
-        }),
+    await fetch(`http://43.200.204.217:8080/api/posts/${post.id}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
       },
-    )
+      body: JSON.stringify({
+        email: email,
+        postId: `${post.id}`,
+      }),
+    })
       .then(async (res) => {
         const data = await res.json();
         alert(data.message);
@@ -155,22 +143,19 @@ const PostDetailPage = () => {
       alert("작성자와 내용을 입력하세요");
       return;
     }
-    await fetch(
-      `http://ec2-13-124-38-196.ap-northeast-2.compute.amazonaws.com:8080/api/comments`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-        body: JSON.stringify({
-          author: newComment.author,
-          content: newComment.content,
-          postId: post.id,
-          email: email,
-        }),
+    await fetch(`http://43.200.204.217:8080/api/comments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
       },
-    )
+      body: JSON.stringify({
+        author: newComment.author,
+        content: newComment.content,
+        postId: post.id,
+        email: email,
+      }),
+    })
       .then(async (res) => {
         const data = await res.json();
         alert(data.message);
@@ -183,20 +168,17 @@ const PostDetailPage = () => {
 
   const handleCommentChange = async (id, content) => {
     const email = getEmailFromToken();
-    await fetch(
-      `http://ec2-13-124-38-196.ap-northeast-2.compute.amazonaws.com:8080/api/comments/${id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-        body: JSON.stringify({
-          email: email,
-          content: content,
-        }),
+    await fetch(`http://43.200.204.217:8080/api/comments/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
       },
-    )
+      body: JSON.stringify({
+        email: email,
+        content: content,
+      }),
+    })
       .then(async (res) => {
         const data = await res.json();
         alert(data.message);
@@ -207,19 +189,16 @@ const PostDetailPage = () => {
 
   const handleCommentDelete = async (id) => {
     const email = getEmailFromToken();
-    await fetch(
-      `http://ec2-13-124-38-196.ap-northeast-2.compute.amazonaws.com:8080/api/comments/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-        body: JSON.stringify({
-          email: email,
-        }),
+    await fetch(`http://43.200.204.217:8080/api/comments/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
       },
-    )
+      body: JSON.stringify({
+        email: email,
+      }),
+    })
       .then(async (res) => {
         const data = await res.json();
         alert(data.message);
