@@ -13,7 +13,7 @@ const LoginPage = () => {
 
   const loginHandler = async (path, email, password, username) => {
     try {
-      const res = await fetch(`http://43.200.204.217:8080${path}`, {
+      const res = await fetch(`http://localhost:8080${path}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

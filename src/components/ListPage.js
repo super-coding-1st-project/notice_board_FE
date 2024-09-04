@@ -32,6 +32,28 @@ const ListPage = () => {
     },
   ]);
 
+  const getEmailFromToken = () => {
+    try {
+      const token = localStorage.getItem("token");
+      const base64Url = token.split(".")[1];
+      const decodedStr = atob(base64Url.replace(/-/g, "+").replace(/_/g, "/"));
+      const decodedJWT = JSON.parse(
+        new TextDecoder("utf-8").decode(
+          new Uint8Array(
+            decodedStr.split("").map((char) => char.charCodeAt(0)),
+          ),
+        ),
+      );
+
+      return decodedJWT.sub;
+    } catch (error) {
+      alert("토큰을 파싱하는 과정에서 오류가 발생했습니다.");
+      localStorage.removeItem("token");
+      console.log(error);
+      navigate("/");
+    }
+  };
+
   useEffect(() => {
     async function fetchData() {
       const token = localStorage.getItem("token")?.replace("Bearer ", "");
@@ -46,7 +68,7 @@ const ListPage = () => {
       }
       if (token !== null && token !== "null") {
         const email = getEmailFromToken();
-        await fetch("http://43.200.204.217:8080/api/posts", {
+        await fetch("http://localhost:8080/api/posts", {
           headers: {
             Authorization: token,
             Email: email,
@@ -65,7 +87,7 @@ const ListPage = () => {
       }
     }
     fetchData();
-  }, [getEmailFromToken, navigate]);
+  }, []);
 
   const logoutHandler = async () => {
     const token = localStorage.getItem("token");
@@ -75,7 +97,7 @@ const ListPage = () => {
       navigate("/login");
       return;
     }
-    await fetch(`http://43.200.204.217:8080/api/logout`, {
+    await fetch(`http://localhost:8080/api/logout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -98,10 +120,10 @@ const ListPage = () => {
   };
 
   const searchHandler = async (email) => {
-    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) return;
+    if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) return;
 
     const { posts } = await fetch(
-      `http://43.200.204.217:8080/api/posts/search?author_email=${email}`,
+      `http://localhost:8080/api/posts/search?author_email=${email}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -115,28 +137,6 @@ const ListPage = () => {
       });
     if (!posts) return;
     setPosts([...posts]);
-  };
-
-  const getEmailFromToken = () => {
-    try {
-      const token = localStorage.getItem("token");
-      const base64Url = token.split(".")[1];
-      const decodedStr = atob(base64Url.replace(/-/g, "+").replace(/_/g, "/"));
-      const decodedJWT = JSON.parse(
-        new TextDecoder("utf-8").decode(
-          new Uint8Array(
-            decodedStr.split("").map((char) => char.charCodeAt(0)),
-          ),
-        ),
-      );
-
-      return decodedJWT.sub;
-    } catch (error) {
-      alert("토큰을 파싱하는 과정에서 오류가 발생했습니다.");
-      localStorage.removeItem("token");
-      console.log(error);
-      navigate("/");
-    }
   };
 
   return (

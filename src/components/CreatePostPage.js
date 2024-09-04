@@ -15,7 +15,7 @@ const CreatePostPage = () => {
 
   const submitPost = async () => {
     const token = localStorage.getItem("token")?.replace("Bearer ", "");
-    await fetch(`http://43.200.204.217:8080/api/posts`, {
+    await fetch(`http://localhost:8080/api/posts`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json", // JSON 데이터임을 서버에 알림

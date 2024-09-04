@@ -34,7 +34,7 @@ const PostDetailPage = () => {
 
   async function fetchData() {
     const post = JSON.parse(localStorage.getItem("post"));
-    await fetch(`http://43.200.204.217:8080/api/comments`, {
+    await fetch(`http://localhost:8080/api/comments`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("token"),
@@ -62,7 +62,7 @@ const PostDetailPage = () => {
 
   const handlePostChange = async () => {
     const email = getEmailFromToken();
-    await fetch(`http://43.200.204.217:8080/api/posts/${post.id}`, {
+    await fetch(`http://localhost:8080/api/posts/${post.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -86,7 +86,7 @@ const PostDetailPage = () => {
 
   const handlePostDelete = async () => {
     const email = getEmailFromToken();
-    await fetch(`http://43.200.204.217:8080/api/posts/${post.id}`, {
+    await fetch(`http://localhost:8080/api/posts/${post.id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -109,7 +109,7 @@ const PostDetailPage = () => {
 
   const handleLike = async () => {
     const email = getEmailFromToken();
-    await fetch(`http://43.200.204.217:8080/api/posts/${post.id}/like`, {
+    await fetch(`http://localhost:8080/api/posts/${post.id}/like`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -143,7 +143,7 @@ const PostDetailPage = () => {
       alert("작성자와 내용을 입력하세요");
       return;
     }
-    await fetch(`http://43.200.204.217:8080/api/comments`, {
+    await fetch(`http://localhost:8080/api/comments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -168,7 +168,7 @@ const PostDetailPage = () => {
 
   const handleCommentChange = async (id, content) => {
     const email = getEmailFromToken();
-    await fetch(`http://43.200.204.217:8080/api/comments/${id}`, {
+    await fetch(`http://localhost:8080/api/comments/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -189,7 +189,7 @@ const PostDetailPage = () => {
 
   const handleCommentDelete = async (id) => {
     const email = getEmailFromToken();
-    await fetch(`http://43.200.204.217:8080/api/comments/${id}`, {
+    await fetch(`http://localhost:8080/api/comments/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
