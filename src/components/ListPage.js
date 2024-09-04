@@ -65,7 +65,7 @@ const ListPage = () => {
       }
     }
     fetchData();
-  }, []);
+  }, [getEmailFromToken, navigate]);
 
   const logoutHandler = async () => {
     const token = localStorage.getItem("token");
